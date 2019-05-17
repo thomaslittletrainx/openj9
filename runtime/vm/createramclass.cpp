@@ -2405,7 +2405,7 @@ fail:
 #if defined(J9VM_OPT_VALHALLA_VALUE_TYPES)
 			allocationRequests[RAM_CLASS_FLATTENED_CLASS_CACHE].prefixSize = 0;
 			allocationRequests[RAM_CLASS_FLATTENED_CLASS_CACHE].alignment = OMR_MAX(sizeof(J9Class *), sizeof(UDATA));
-			allocationRequests[RAM_CLASS_FLATTENED_CLASS_CACHE].alignedSize = sizeof(J9FlattenedClassCache) * (flattenedClassCache[0].offset > 0 ? flattenedClassCache[0].offset + 1 : 0);
+			allocationRequests[RAM_CLASS_FLATTENED_CLASS_CACHE].alignedSize = sizeof(J9FlattenedClassCache) * (flattenedClassCache[0].offset + 1);
 			allocationRequests[RAM_CLASS_FLATTENED_CLASS_CACHE].address = NULL;
 #endif /* J9VM_OPT_VALHALLA_VALUE_TYPES */
 
@@ -2921,6 +2921,21 @@ internalCreateRAMClassFromROMClass(J9VMThread *vmThread, J9ClassLoader *classLoa
 	J9Module* module = NULL;
 #if defined(J9VM_OPT_VALHALLA_VALUE_TYPES)
 	UDATA romFieldCount = romClass->romFieldCount;
+	/*             Structuure of Flattened Class Cache             */
+	/***************************************************************
+	 *                       |              |                      *  
+	 *      Default Value    |    empty     |        size          *
+	 *_______________________|______________|______________________* 
+	 *                       |              |                      *
+	 *        clazz1         |     NaS1     |       offset1        *
+	 *_______________________|______________|______________________* 
+	 *                       |              |                      * 
+	 *           *           |      *       |           *          *            
+	 *           *           |      *       |           *          * 
+	 *           *           |      *       |           *          * 
+	 *                       |              |                      *
+	 *        clazzN         |     NaSN     |       offsetN        *
+	 ****************************************************************/		
 	UDATA flattenedClassCacheAllocSize = sizeof(J9FlattenedClassCache) * (romFieldCount + 1);
 	UDATA largestFieldType = 0;
 	/* The +1 is for the size field */

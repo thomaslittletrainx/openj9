@@ -71,7 +71,14 @@ GC_ClassIteratorClassSlots::nextSlot()
 			return slotPtr;
 		}
 		_state += 1;
-		
+	
+	case classiteratorclassslots_state_default:
+		_state += 1;
+		/*when clazz is not an array and it is a value type*/
+		if(J9_IS_J9CLASS_VALUETYPE(_clazzPtr) && (!J9CLASS_IS_ARRAY(_clazzPtr))){
+			return (J9Class **) &(_clazzPtr->flattenedClassCache->clazz);
+		}
+				
 	default:
 		break;
 	}

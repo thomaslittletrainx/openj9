@@ -391,6 +391,16 @@ doVerify:
 					clazz = VM_VMHelpers::currentClass(clazz);
 				}
 				VM_ObjectMonitor::exitObjectMonitor(currentThread, initializationLock);
+
+#if defined(J9VM_OPT_VALHALLA_VALUE_TYPES)
+				/*Initialize a Flattened Class Cache */
+				j9object_t defaultValue = vm->memoryManagerFunctions->J9AllocateObject(currentThread, clazz, J9_GC_ALLOCATE_OBJECT_TENURED | J9_GC_ALLOCATE_OBJECT_NON_INSTRUMENTABLE);
+				clazz->flattenedClassCache[0].clazz = (J9Class *)defaultValue;
+				if (NULL == defaultValue) {
+					setHeapOutOfMemoryError(currentThread);
+					goto done;
+				}
+#endif
 				break;
 			}
 			case J9ClassInitUnprepared: {

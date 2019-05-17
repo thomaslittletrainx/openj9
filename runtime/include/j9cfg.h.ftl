@@ -67,4 +67,6 @@ extern "C" {
 }
 #endif
 
+#define J9VM_OPT_VALHALLA_VALUE_TYPES
+
 #endif /* J9CFG_H */

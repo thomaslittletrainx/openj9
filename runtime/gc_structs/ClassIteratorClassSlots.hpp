@@ -48,6 +48,7 @@ enum {
 	classiteratorclassslots_state_superclasses,
 	classiteratorclassslots_state_interfaces,
 	classiteratorclassslots_state_array_class_slots,
+	classiteratorclassslots_state_default,
 	classiteratorclassslots_state_end
 };
 
